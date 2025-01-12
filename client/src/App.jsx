@@ -7,9 +7,11 @@ import LocationMarker from "./components/locationMarke/LocationMarker.jsx";
 import L from "leaflet";
 
 import passport2 from "./assets/passport2.png";
+import TopBar from "./components/topBar/TopBar.jsx";
 
 function App() {
   const [pins, setPins] = useState([]);
+  const [user, setUser] = useState({});
   // Custom icon creation
   const customIcon = L.icon({
     iconUrl: passport2, // Replace with your icon URL
@@ -26,27 +28,37 @@ function App() {
       console.log(err);
     }
   };
+  const getUser = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/user");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     getPins();
   }, []);
   return (
-    <MapContainer
-      center={[36.8065, 10.1815]}
-      zoom={13}
-      scrollWheelZoom={true}
-      style={{ height: "100vh" }}
-    >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {pins.map((el, i) => {
-        return (
-          <Marker position={[el.lat, el.long]} key={i} icon={customIcon}>
-            <PopUp infos={el} />
-          </Marker>
-        );
-      })}
-      <LocationMarker />
-    </MapContainer>
+    <>
+      <TopBar />
+      <MapContainer
+        center={[36.8065, 10.1815]}
+        zoom={13}
+        scrollWheelZoom={true}
+        style={{ height: "100vh", zIndex: 0 }}
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        {pins.map((el, i) => {
+          return (
+            <Marker position={[el.lat, el.long]} key={i} icon={customIcon}>
+              <PopUp infos={el} />
+            </Marker>
+          );
+        })}
+        <LocationMarker />
+      </MapContainer>
+    </>
   );
 }
 

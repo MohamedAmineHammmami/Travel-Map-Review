@@ -1,5 +1,9 @@
 import User from "../modules/User.js";
 import bcrypt from "bcrypt";
+import Jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -31,7 +35,7 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { username, password, email } = req.body;
+  const { username, password } = req.body;
   if (!username || !password) {
     return res
       .status(400)
@@ -48,7 +52,21 @@ export const login = async (req, res) => {
         .status(401)
         .json({ success: false, msg: "Wrong credentials..!" });
     }
+    const access_token = Jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+      expiresIn: "24h",
+    });
+    //send token to client by authHeader
+    res.set("authorization", `Bearer ${access_token}`);
+
     res.status(200).json({ success: true, msg: "You're logged in!" });
+  } catch (err) {
+    res.status(500).json({ success: false, err: err.message });
+  }
+};
+
+export const logOut = async (req, res) => {
+  try {
+    res.send("logout");
   } catch (err) {
     res.status(500).json({ success: false, err: err.message });
   }

@@ -1,0 +1,15 @@
+.review textarea {
+  width: 100%;
+  height: fit-content;
+  border: none;
+  border-bottom: 1px solid tomato;
+  outline: none;
+  margin-bottom: 0.5rem;
+  font-family: Roboto;
+  font-weight: 500;
+}
+
+textarea::placeholder {
+  font-family: Roboto;
+  font-weight: 500;
+}

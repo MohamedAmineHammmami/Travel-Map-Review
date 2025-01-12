@@ -8,8 +8,7 @@ import FormPopUp from "../formPopUp/FormPopUp";
 function LocationMarker() {
   const [markers, setMarkers] = useState([]);
   const [locationInfo, setLocationInfo] = useState(null);
-
-  console.log("location", locationInfo.display_name);
+  console.log(locationInfo?.lat, locationInfo?.lon);
 
   // Custom icon creation
   const customIcon = L.icon({
@@ -45,7 +44,13 @@ function LocationMarker() {
   return (
     <>
       {markers.map((el, i) => (
-        <Marker key={i} position={[el.lat, el.lng]} icon={customIcon}></Marker>
+        <Marker key={i} position={[el.lat, el.lng]} icon={customIcon}>
+          <FormPopUp
+            place={locationInfo?.display_name}
+            lat={locationInfo?.lat}
+            long={locationInfo?.lon}
+          />
+        </Marker>
       ))}
     </>
   );
