@@ -58,7 +58,7 @@ export const login = async (req, res) => {
     //send token to client by authHeader
     res.set("authorization", `Bearer ${access_token}`);
 
-    res.status(200).json({ success: true, msg: "You're logged in!" });
+    res.status(200).json({ success: true, msg: "You're logged in!", user });
   } catch (err) {
     res.status(500).json({ success: false, err: err.message });
   }

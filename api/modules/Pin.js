@@ -19,7 +19,7 @@ const pinSchema = new mongoose.Schema(
     review: {
       type: String,
       minlength: [3, "review should at least 3 characters!"],
-      maxlength: [55, "review at max 55 characters!"],
+      maxlength: [100, "review at max 55 characters!"],
       require: true,
     },
     rating: {

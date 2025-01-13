@@ -5,20 +5,31 @@ import "./app.css";
 import PopUp from "./components/popUp/PopUp.jsx";
 import LocationMarker from "./components/locationMarke/LocationMarker.jsx";
 import L from "leaflet";
-
 import passport2 from "./assets/passport2.png";
 import TopBar from "./components/topBar/TopBar.jsx";
+import Login from "./components/login/Login.jsx";
+import Register from "./components/register/Register.jsx";
+
+// Custom icon creation
+const customIcon = L.icon({
+  iconUrl: passport2, // Replace with your icon URL
+  iconSize: [32, 32], // Size of the icon [width, height]
+  iconAnchor: [16, 32], // Anchor point of the icon [x, y]
+  popupAnchor: [0, -32], // Popup anchor point [x, y]
+});
+
+const initialInputs = { username: "", email: "", password: "" };
 
 function App() {
   const [pins, setPins] = useState([]);
   const [user, setUser] = useState({});
-  // Custom icon creation
-  const customIcon = L.icon({
-    iconUrl: passport2, // Replace with your icon URL
-    iconSize: [32, 32], // Size of the icon [width, height]
-    iconAnchor: [16, 32], // Anchor point of the icon [x, y]
-    popupAnchor: [0, -32], // Popup anchor point [x, y]
-  });
+  const [loginInputs, setLoginInputs] = useState({ ...initialInputs });
+  const [registerInputs, setRegisterInputs] = useState({ ...initialInputs });
+  const [loginToggle, setLoginToggle] = useState(false);
+  const [registerToggle, setRegisterToggle] = useState(false);
+
+  console.log("registerInputs", registerInputs);
+  console.log("loginInputs", loginInputs);
 
   const getPins = async () => {
     try {
@@ -28,11 +39,30 @@ function App() {
       console.log(err);
     }
   };
-  const getUser = async () => {
+
+  const login = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/user");
+      const res = await axios.post("http://localhost:5000/api/auth/login");
+      setUser(res.data.user);
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const handleOnChange = (e) => {
+    e.preventDefault();
+    const inputs = {
+      username: "",
+      email: "",
+      password: "",
+      [e.target.name]: e.target.value,
+    };
+
+    const { email } = inputs;
+    if (email) {
+      setRegisterInputs(inputs);
+    } else {
+      setLoginInputs(inputs);
     }
   };
 
@@ -41,7 +71,17 @@ function App() {
   }, []);
   return (
     <>
-      <TopBar />
+      <TopBar loginToggle={setLoginToggle} registerToggle={setRegisterToggle} />
+      <Login
+        loginToggle={setLoginToggle}
+        loginState={loginToggle}
+        handleOnChange={handleOnChange}
+      />
+      <Register
+        registerToggle={setRegisterToggle}
+        registerState={registerToggle}
+        handleOnChange={handleOnChange}
+      />
       <MapContainer
         center={[36.8065, 10.1815]}
         zoom={13}
