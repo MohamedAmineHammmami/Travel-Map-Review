@@ -13,3 +13,10 @@ textarea::placeholder {
   font-family: Roboto;
   font-weight: 500;
 }
+
+.submitBtn {
+  background-color: tomato;
+  color: white;
+  font-family: Roboto;
+  font-weight: 700;
+}

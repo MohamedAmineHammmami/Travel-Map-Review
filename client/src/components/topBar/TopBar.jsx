@@ -1,28 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import "./topbar.css";
 
-function TopBar({ loginToggle, registerToggle }) {
+function TopBar({ loginToggle, registerToggle, user, setUser }) {
+  const logOut = () => {
+    localStorage.clear();
+    setUser(null);
+  };
   return (
     <div className="topBar">
-      <button
-        className="login"
-        onClick={() => {
-          loginToggle(true);
-          registerToggle(false);
-        }}
-      >
-        Log in
-      </button>
-      <button
-        className="register"
-        onClick={() => {
-          loginToggle(false);
-          registerToggle(true);
-        }}
-      >
-        Register
-      </button>
-      <button className="logout">Log out</button>
+      {localStorage.getItem("token") ? (
+        <button className="logout" onClick={() => logOut()}>
+          Log out
+        </button>
+      ) : (
+        <>
+          <button
+            className="login"
+            onClick={() => {
+              loginToggle(true);
+              registerToggle(false);
+            }}
+          >
+            Log in
+          </button>
+          <button
+            className="register"
+            onClick={() => {
+              loginToggle(false);
+              registerToggle(true);
+            }}
+          >
+            Register
+          </button>
+        </>
+      )}
     </div>
   );
 }

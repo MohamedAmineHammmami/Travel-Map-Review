@@ -18,18 +18,11 @@ const customIcon = L.icon({
   popupAnchor: [0, -32], // Popup anchor point [x, y]
 });
 
-const initialInputs = { username: "", email: "", password: "" };
-
 function App() {
   const [pins, setPins] = useState([]);
-  const [user, setUser] = useState({});
-  const [loginInputs, setLoginInputs] = useState({ ...initialInputs });
-  const [registerInputs, setRegisterInputs] = useState({ ...initialInputs });
   const [loginToggle, setLoginToggle] = useState(false);
   const [registerToggle, setRegisterToggle] = useState(false);
-
-  console.log("registerInputs", registerInputs);
-  console.log("loginInputs", loginInputs);
+  const [user, setUser] = useState(null);
 
   const getPins = async () => {
     try {
@@ -40,47 +33,25 @@ function App() {
     }
   };
 
-  const login = async () => {
-    try {
-      const res = await axios.post("http://localhost:5000/api/auth/login");
-      setUser(res.data.user);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleOnChange = (e) => {
-    e.preventDefault();
-    const inputs = {
-      username: "",
-      email: "",
-      password: "",
-      [e.target.name]: e.target.value,
-    };
-
-    const { email } = inputs;
-    if (email) {
-      setRegisterInputs(inputs);
-    } else {
-      setLoginInputs(inputs);
-    }
-  };
-
   useEffect(() => {
     getPins();
   }, []);
   return (
     <>
-      <TopBar loginToggle={setLoginToggle} registerToggle={setRegisterToggle} />
+      <TopBar
+        loginToggle={setLoginToggle}
+        registerToggle={setRegisterToggle}
+        user={user}
+        setUser={setUser}
+      />
       <Login
         loginToggle={setLoginToggle}
         loginState={loginToggle}
-        handleOnChange={handleOnChange}
+        setUser={setUser}
       />
       <Register
         registerToggle={setRegisterToggle}
         registerState={registerToggle}
-        handleOnChange={handleOnChange}
       />
       <MapContainer
         center={[36.8065, 10.1815]}
@@ -96,7 +67,7 @@ function App() {
             </Marker>
           );
         })}
-        <LocationMarker />
+        {user && <LocationMarker username={user?.username} />}
       </MapContainer>
     </>
   );

@@ -7,12 +7,11 @@ const pinSchema = new mongoose.Schema(
       minlength: [3, "username at least 3 characters!"],
       maxlength: [45, "username at least 45 characters!"],
       require: true,
-      unique: true,
     },
     place: {
       type: String,
       minlength: [3, "place should at least 3 characters!"],
-      maxlength: [45, "place should at max 3 characters!"],
+      maxlength: [255, "place should at max 255 characters!"],
       require: true,
       unique: true,
     },
