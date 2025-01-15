@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./register.css";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
+import axios from "axios";
 
 function Register({ registerState, registerToggle }) {
   const [registerInputs, setRegisterInputs] = useState({
@@ -9,6 +10,20 @@ function Register({ registerState, registerToggle }) {
     email: "",
     password: "",
   });
+
+  console.log(registerInputs);
+
+  const register = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        registerInputs
+      );
+      console.log(res.data.msg);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className={registerState ? "registerPopUp" : "registerPopUpHide"}>
       <CancelPresentationIcon
@@ -22,7 +37,13 @@ function Register({ registerState, registerToggle }) {
         <AddLocationAltIcon style={{ color: "teal", fontSize: "2.6rem" }} />
         <h1>MapTravel</h1>
       </div>
-      <form className="registerForm">
+      <form
+        className="registerForm"
+        onSubmit={(e) => {
+          e.preventDefault();
+          register();
+        }}
+      >
         <label>username:</label>
         <input
           type="text"
