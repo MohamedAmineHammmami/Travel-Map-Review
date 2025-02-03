@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
@@ -6,26 +7,36 @@ const userSchema = new mongoose.Schema(
       type: String,
       minlength: [3, "username must contain at least 3 characters!"],
       maxlength: [45, "username must conatin at max 45 characters!"],
-      require: true,
+      required: true,
     },
     email: {
       type: String,
       match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      require: true,
+      required: true,
       unique: true,
     },
     password: {
       type: String,
-      validate: {
-        validator: (v) =>
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/.test(v),
-        message: (props) => `${props.value} is not strong password!`,
-      },
-      require: true,
+      match:
+        /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/,
+      required: true,
     },
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", async function (next) {
+  try {
+    if (!this.isModified("password")) {
+      return next();
+    }
+    const salt = bcrypt.genSaltSync(10);
+    this.password = bcrypt.hashSync(this.password, salt);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 const User = mongoose.model("User", userSchema);
 

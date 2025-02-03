@@ -7,6 +7,7 @@ dotenv.config();
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
+
   if (!username || !email || !password) {
     return res
       .status(400)
@@ -19,13 +20,8 @@ export const register = async (req, res) => {
         .status(400)
         .json({ success: false, msg: "User already exist!" });
     }
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(password, salt);
-    await User.create({
-      username,
-      email,
-      password: hash,
-    });
+
+    await User.create({ username, email, password });
     res
       .status(201)
       .json({ success: true, msg: "User was successfully created!" });
@@ -43,6 +39,7 @@ export const login = async (req, res) => {
   }
   try {
     const user = await User.findOne({ username });
+
     if (!user) {
       return res.status(404).json({ success: false, msg: "User not found!" });
     }
@@ -58,7 +55,11 @@ export const login = async (req, res) => {
     //send token to client by authHeader
     res.set("authorization", `Bearer ${access_token}`);
 
-    res.status(200).json({ success: true, msg: "You're logged in!", user });
+    res.status(200).json({
+      success: true,
+      msg: "You're logged in!",
+      user: { ...user._doc, password: undefined },
+    });
   } catch (err) {
     res.status(500).json({ success: false, err: err.message });
   }

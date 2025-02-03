@@ -13,6 +13,7 @@ function Login({ loginToggle, loginState, setUser }) {
         "http://localhost:5000/api/auth/login",
         loginInputs
       );
+      console.log(res.data);
       const token = res.headers["authorization"]?.split(" ")[1];
       if (token) {
         localStorage.setItem("token", token);

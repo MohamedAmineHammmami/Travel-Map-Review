@@ -11,7 +11,7 @@ function Register({ registerState, registerToggle }) {
     password: "",
   });
 
-  console.log(registerInputs);
+  console.log("registerInputs", registerInputs);
 
   const register = async () => {
     try {
